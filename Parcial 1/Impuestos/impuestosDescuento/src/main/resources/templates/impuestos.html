@@ -12,9 +12,12 @@
     <button type="submit">Calcular</button>
 </form>
 
-<div th:if="${iva != null}">
-    <h2>IVA Calculado: <span th:text="${iva}">0.0</span></h2>
-    <h2>Precio Final con IVA: <span th:text="${total}">0.0</span></h2>
+<div th:if="${resultado != null}">
+    <!-- Mostrar mensaje si se aplicó descuento -->
+    <p th:if="${monto >= 1200}" style="color: green;">Se aplicó un descuento del 5%</p>
+
+    <h2>IVA Calculado (15%): <span th:text="${resultado}">0.0</span></h2>
+    <h2>Total a pagar (con IVA): <span th:text="${total}">0.0</span></h2>
 </div>
 
 </body>
