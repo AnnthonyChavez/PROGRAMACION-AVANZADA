@@ -7,25 +7,28 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @Controller
-public class ImpuestosController {
+public class ImpuestosController{
     private final ServiciosImpuestos servicio;
-
+    //Constructir con inyeccion de dependencias
     public ImpuestosController(ServiciosImpuestos servicio) {
         this.servicio = servicio;
     }
 
     @GetMapping("/impuestos")
-    public String formulario(Model model) {
-        model.addAttribute("monto", 0.0);
+    public String formulario(Model model){
+        model.addAttribute("monto",0.0);
         return "impuestos";
     }
 
     @PostMapping("/impuestos")
     public String calcular(Model model, double monto) {
-        double[] resultados = servicio.calcularIVA(monto);
-        model.addAttribute("monto", monto);
-        model.addAttribute("iva", resultados[0]);
-        model.addAttribute("total", resultados[1]);
+        double resultado = servicio.calcularIVA(monto);
+        double total = monto + resultado; // Monto + IVA
+
+        model.addAttribute("monto", monto); // Para poder mostrar el mensaje y monto original
+        model.addAttribute("resultado", resultado); // IVA calculado
+        model.addAttribute("total", total); // Total a pagar
+
         return "impuestos";
     }
 }
