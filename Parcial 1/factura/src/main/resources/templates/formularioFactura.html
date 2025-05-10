@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Generar Factura</title>
+    <link rel="stylesheet" th:href="@{/estilos.css}">
+
+</head>
+<body>
+<h1>Generar Factura</h1>
+
+<form action="/agregarProducto" method="post" th:object="${producto}">
+    <label>Nombre del Producto:</label>
+    <input type="text" th:field="*{nombre}" required />
+
+    <label>Precio del Producto ($):</label>
+    <input type="number" step="0.01" min="0.01" th:field="*{precio}" required />
+
+    <label class="checkbox-label">
+        ¿Es un producto de consumo especial?
+        <input type="checkbox" th:field="*{esConsumoEspecial}" />
+    </label>
+
+    <button type="submit">Agregar Producto</button>
+</form>
+
+<!-- Card para mostrar los productos ingresados -->
+<div class="card">
+    <h3>Productos Ingresados</h3>
+    <ul>
+        <!-- Aquí generamos la lista de productos ingresados -->
+        <li th:each="producto : ${productos}" th:class="${producto.esConsumoEspecial} ? 'consumo-especial' : ''">
+            <span class="nombre-producto" th:text="${producto.nombre}">Producto</span>
+            <span th:if="${producto.esConsumoEspecial}" class="consumo-especial">Consumo Especial</span>
+            <span class="precio" th:text="${producto.precio} + ' $'">Precio</span>
+        </li>
+    </ul>
+    <button class="agregar-producto-btn" onclick="window.location.href='/factura'">Agregar Producto</button>
+</div>
+
+
+<form action="/calcularFactura" method="post">
+    <label>IVA (%):</label>
+    <input type="number" name="iva" step="0.1" min="0" required />
+    <button type="submit">Calcular Factura Total</button>
+</form>
+
+<p th:if="${mensajeError}" th:text="${mensajeError}"></p>
+
+</body>
+</html>

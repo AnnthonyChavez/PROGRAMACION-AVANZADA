@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Facturas Generadas</title>
+    <link rel="stylesheet" th:href="@{/estilos.css}">
+
+</head>
+<body>
+<h1>Facturas Generadas</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>#</th>
+        <th>Productos</th>
+        <th>IVA (%)</th>
+        <th>Total ($)</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="factura, iterStat : ${facturas}">
+        <td th:text="${iterStat.count}"></td>
+        <td>
+            <ul>
+                <li th:each="p : ${factura.productos}"
+                    th:text="${p.nombre + ' - $' + p.precio + (p.esConsumoEspecial ? ' (Consumo especial)' : '')}">
+                </li>
+            </ul>
+        </td>
+        <td th:text="${factura.ivaPorcentaje}"></td>
+        <td th:text="${#numbers.formatDecimal(factura.total, 1, 'COMMA', 2, 'POINT')}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<a href="/factura">Nueva Factura</a>
+
+</body>
+</html>
