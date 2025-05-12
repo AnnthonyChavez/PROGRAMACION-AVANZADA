@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculadora Financiera Bancaria</title>
+    <link rel="stylesheet" th:href="@{/estilos.css}">
+</head>
+<body>
+
+<h1>Calculadora Financiera Bancaria</h1>
+
+<form th:action="@{/finanzas/calcular}" th:object="${cliente}" method="post">
+    <div>
+        <label for="saldoAnterior">Saldo Anterior:</label>
+        <input type="number" step="0.01" id="saldoAnterior" th:field="*{saldoAnterior}" required>
+    </div>
+    <div>
+        <label for="compras">Monto de Compras:</label>
+        <input type="number" step="0.01" id="compras" th:field="*{compras}" required>
+    </div>
+    <div>
+        <label for="pagos">Pagos Realizados:</label>
+        <input type="number" step="0.01" id="pagos" th:field="*{pagos}" required>
+    </div>
+    <button type="submit">Calcular</button>
+</form>
+
+</body>
+</html>

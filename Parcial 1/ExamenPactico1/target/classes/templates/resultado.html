@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Resultado del Cálculo Financiero</title>
+    <link rel="stylesheet" th:href="@{/estilos.css}">
+</head>
+<body>
+
+<h2>Resultado del Cálculo Financiero</h2>
+
+<table>
+    <tr>
+        <th>Saldo Anterior</th>
+        <td th:text="${cliente.saldoAnterior}"></td>
+    </tr>
+    <tr>
+        <th>Monto de Compras</th>
+        <td th:text="${cliente.compras}"></td>
+    </tr>
+    <tr>
+        <th>Pagos Realizados</th>
+        <td th:text="${cliente.pagos}"></td>
+    </tr>
+    <tr>
+        <th>Intereses por Mora</th>
+        <td th:text="${cliente.intereses}"></td>
+    </tr>
+    <tr>
+        <th>Multa</th>
+        <td th:text="${cliente.multa}"></td>
+    </tr>
+    <tr>
+        <th>Saldo Actual</th>
+        <td th:text="${cliente.saldoActual}"></td>
+    </tr>
+    <tr>
+        <th>Pago Mínimo</th>
+        <td th:text="${cliente.pagoMinimo}"></td>
+    </tr>
+    <tr>
+        <th>Pago para no generar intereses</th>
+        <td th:text="${cliente.pagoSinInteres}"></td>
+    </tr>
+</table>
+
+<a href="/finanzas">Nuevo Cálculo</a>
+
+</body>
+</html>

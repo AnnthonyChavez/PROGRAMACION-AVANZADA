@@ -1,0 +1,245 @@
+/* Reset some default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+h2 {
+    color: #333;
+}
+
+/* Form styling */
+form {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 0 auto;
+    margin-bottom: 30px;
+}
+
+form label {
+    display: block;
+    margin: 10px 0 5px;
+    color: #333;
+}
+
+form input[type="text"],
+form input[type="number"],
+form input[type="checkbox"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+}
+
+form button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+}
+
+form button:hover {
+    background-color: #45a049;
+}
+
+/* List of products */
+ul {
+    list-style-type: none;
+    margin: 10px 0;
+    padding: 0;
+}
+
+ul li {
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    margin-bottom: 8px;
+    padding: 10px;
+    font-size: 16px;
+    color: #333;
+}
+
+/* Factura table styling */
+table {
+    width: 80%;
+    margin: 0 auto;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table th,
+table td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+table th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+table td {
+    background-color: #fff;
+}
+
+table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+a {
+    text-decoration: none;
+    color: #4CAF50;
+    font-weight: bold;
+    display: block;
+    text-align: center;
+    margin-top: 30px;
+    font-size: 18px;
+}
+
+a:hover {
+    color: #45a049;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    table {
+        width: 100%;
+    }
+
+    form {
+        width: 90%;
+    }
+}
+
+/* Estilo para la card que contiene los productos ingresados */
+.card {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Título de la card */
+.card h3 {
+    text-align: center;
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Estilo para la lista de productos dentro de la card */
+.card ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Estilo de cada producto en la lista */
+.card ul li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    font-size: 16px;
+}
+
+/* Estilo para el nombre del producto */
+.card ul li .nombre-producto {
+    font-weight: bold;
+    color: #333;
+}
+
+/* Estilo para el precio y etiqueta de consumo especial */
+.card ul li .precio {
+    color: #007BFF;
+    font-weight: normal;
+}
+
+/* Resaltar productos de consumo especial */
+.card ul li.consumo-especial {
+    background-color: #f9f9f9;
+    border-left: 5px solid #ff9800;
+}
+
+/* Si el producto es de consumo especial, se resalta */
+.card ul li.consumo-especial .precio {
+    color: #ff9800;
+    font-weight: bold;
+}
+
+/* Botón para agregar más productos */
+.card .agregar-producto-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.card .agregar-producto-btn:hover {
+    background-color: #45a049;
+}
+
+/* Responsividad para pantallas más pequeñas */
+@media (max-width: 768px) {
+    .card {
+        width: 90%;
+    }
+}
+
+/* Estilo para el checkbox con su etiqueta en línea */
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    color: #333;
+    cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.checkbox-label {
+    display: flex;             /* Usamos flex para alinear los elementos en una fila */
+    align-items: center;       /* Alinea el checkbox y el texto verticalmente */
+    font-size: 19px;
+    color: #333;
+    cursor: pointer;
+    white-space: nowrap;       /* Evita que el texto se divida en varias líneas */
+}
+
+.checkbox-label input[type="checkbox"] {
+    margin-right: 7px;         /* Espacio entre el checkbox y el texto */
+}
