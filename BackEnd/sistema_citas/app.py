@@ -2,8 +2,9 @@
 from dotenv import load_dotenv
 import os
 from flask import Flask, jsonify
-from extensions import db, api 
-import routes 
+from extensions import db, api
+from api.v1 import api_bp_v1
+from flask_cors import CORS # Importa CORS
 
 load_dotenv()
 
@@ -18,6 +19,11 @@ print("-------------------------------------------\n")
 
 app = Flask(__name__)
 
+# Habilita CORS para toda la aplicación.
+# En un entorno de producción, es recomendable restringir origins a dominios específicos.
+# Para desarrollo, "*" permite cualquier origen.
+CORS(app) 
+
 app.config['SQLALCHEMY_DATABASE_URI'] = (
     f"postgresql+psycopg2://{os.environ.get('DB_USER')}:"
     f"{os.environ.get('DB_PASSWORD')}@"
@@ -29,12 +35,16 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'clave_secreta_default_dev_fallback')
 
 db.init_app(app)
-api.init_app(app) 
+
+app.register_blueprint(api_bp_v1)
 
 print(f"SQLALCHEMY_DATABASE_URI: {app.config['SQLALCHEMY_DATABASE_URI']}\n")
 
 @app.route('/')
 def index():
+    """
+    Ruta de prueba para verificar que la aplicación Flask está funcionando.
+    """
     return jsonify({"message": "¡API del Sistema de Citas Médicas funcionando!"}), 200
 
 if __name__ == '__main__':

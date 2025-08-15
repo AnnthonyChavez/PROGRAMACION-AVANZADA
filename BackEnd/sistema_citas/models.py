@@ -1,3 +1,4 @@
+
 # models.py
 from extensions import db # Importa la instancia de db
 
@@ -8,6 +9,11 @@ class Paciente(db.Model):
     apellido = db.Column(db.String(255), nullable=False)
     fecha_nacimiento = db.Column(db.Date, nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
+
+    # Relación con Citas: un paciente puede tener muchas citas
+    # backref permite acceder al paciente desde la cita (e.g., cita.paciente)
+    # lazy=True carga las citas solo cuando se accede a ellas
+    citas = db.relationship('Cita', backref='paciente', lazy=True)
 
     def to_dict(self):
         return {
@@ -28,6 +34,9 @@ class Medico(db.Model):
     apellido = db.Column(db.String(255), nullable=False)
     especialidad = db.Column(db.String(255), nullable=False)
 
+    # Relación con Citas: un médico puede tener muchas citas
+    citas = db.relationship('Cita', backref='medico', lazy=True)
+
     def to_dict(self):
         return {
             'id': self.id,
@@ -45,6 +54,9 @@ class Consultorio(db.Model):
     numero = db.Column(db.String(50), unique=True, nullable=False)
     piso = db.Column(db.Integer, nullable=False)
 
+    # Relación con Citas: un consultorio puede tener muchas citas
+    citas = db.relationship('Cita', backref='consultorio', lazy=True)
+
     def to_dict(self):
         return {
             'id': self.id,
@@ -58,10 +70,10 @@ class Consultorio(db.Model):
 class Cita(db.Model):
     __tablename__ = 'citas' # Nombre explícito de la tabla
     id = db.Column(db.Integer, primary_key=True)
-    # !!! IMPORTANTE: Las claves foráneas deben referenciar el __tablename__ en minúsculas y singular (o el nombre real de la tabla si es diferente)
-    paciente_id = db.Column(db.Integer, db.ForeignKey('pacientes.id', ondelete="RESTRICT"), nullable=False) # Cambiado a 'pacientes.id'
-    medico_id = db.Column(db.Integer, db.ForeignKey('medicos.id', ondelete="RESTRICT"), nullable=False)     # Cambiado a 'medicos.id'
-    consultorio_id = db.Column(db.Integer, db.ForeignKey('consultorios.id', ondelete="RESTRICT"), nullable=False) # Cambiado a 'consultorios.id'
+    # Las claves foráneas deben referenciar el __tablename__ en minúsculas y singular (o el nombre real de la tabla si es diferente)
+    paciente_id = db.Column(db.Integer, db.ForeignKey('pacientes.id', ondelete="RESTRICT"), nullable=False)
+    medico_id = db.Column(db.Integer, db.ForeignKey('medicos.id', ondelete="RESTRICT"), nullable=False)
+    consultorio_id = db.Column(db.Integer, db.ForeignKey('consultorios.id', ondelete="RESTRICT"), nullable=False)
     fecha = db.Column(db.Date, nullable=False)
     hora = db.Column(db.Time, nullable=False)
 

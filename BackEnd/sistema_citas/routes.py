@@ -1,6 +1,5 @@
-# routes.py
 import datetime
-from flask import request # Removed jsonify from here, not needed for Resource returns
+from flask import request
 from flask_restful import Resource, reqparse
 from extensions import db, api
 
@@ -37,10 +36,10 @@ class PacienteResource(Resource):
             paciente = Paciente.query.get(paciente_id)
             if not paciente:
                 return {"message": "Paciente no encontrado"}, 404
-            return paciente.to_dict() # <-- CORREGIDO: Quitado jsonify y el 200 explícito
+            return paciente.to_dict()
         
         pacientes = Paciente.query.all()
-        return [p.to_dict() for p in pacientes] # <-- CORREGIDO: Quitado jsonify y el 200 explícito
+        return [p.to_dict() for p in pacientes]
 
     # POST para crear un nuevo paciente
     def post(self):
@@ -79,7 +78,7 @@ class PacienteResource(Resource):
 
             paciente.nombre = args['nombre']
             paciente.apellido = args['apellido']
-            paciente.fecha_nacimiento = args['fecha_nacimiento']
+            paciente.fecha_nacimiento = datetime.datetime.strptime(args['fecha_nacimiento'], '%Y-%m-%d').date() # Asegurar formato de fecha
             paciente.email = args['email']
             db.session.commit()
             return {"message": "Paciente actualizado correctamente", "paciente": paciente.to_dict()}, 200
@@ -110,10 +109,10 @@ class MedicoResource(Resource):
             medico = Medico.query.get(medico_id)
             if not medico:
                 return {"message": "Médico no encontrado"}, 404
-            return medico.to_dict() # <-- CORREGIDO: Quitado jsonify y el 200 explícito
+            return medico.to_dict()
         
         medicos = Medico.query.all()
-        return [m.to_dict() for m in medicos] # <-- CORREGIDO: Quitado jsonify y el 200 explícito
+        return [m.to_dict() for m in medicos]
 
     def post(self):
         args = medico_parser.parse_args()
@@ -165,10 +164,10 @@ class ConsultorioResource(Resource):
             consultorio = Consultorio.query.get(consultorio_id)
             if not consultorio:
                 return {"message": "Consultorio no encontrado"}, 404
-            return consultorio.to_dict() # <-- CORREGIDO: Quitado jsonify y el 200 explícito
+            return consultorio.to_dict()
         
         consultorios = Consultorio.query.all()
-        return [c.to_dict() for c in consultorios] # <-- CORREGIDO: Quitado jsonify y el 200 explícito
+        return [c.to_dict() for c in consultorios]
 
     def post(self):
         args = consultorio_parser.parse_args()
@@ -200,7 +199,7 @@ class ConsultorioResource(Resource):
 
             consultorio.numero = args['numero']
             consultorio.piso = args['piso']
-            db.session.commit()
+            db.session.commit() # ¡Importante: no olvides el commit!
             return {"message": "Consultorio actualizado correctamente", "consultorio": consultorio.to_dict()}, 200
         except Exception as e:
             db.session.rollback()
@@ -228,10 +227,10 @@ class CitaResource(Resource):
             cita = Cita.query.get(cita_id)
             if not cita:
                 return {"message": "Cita no encontrada"}, 404
-            return cita.to_dict(), 200 # <-- CORREGIDO: Quitado jsonify y el 200 explícito
+            return cita.to_dict()
         
         citas = Cita.query.all()
-        return [c.to_dict() for c in citas], 200 # <-- CORREGIDO: Quitado jsonify y el 200 explícito
+        return [c.to_dict() for c in citas]
 
     def post(self):
         args = cita_parser.parse_args()
