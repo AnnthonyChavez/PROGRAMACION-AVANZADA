@@ -1,0 +1,39 @@
+# .github/workflows/frontend-ci.yml
+name: Frontend CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20' # O la versión de Node.js que uses (ej. '18', '22')
+
+    - name: Install dependencies
+      run: npm ci # 'npm ci' es más robusto para CI que 'npm install'
+
+    - name: Run ESLint
+      run: npm run lint
+
+    - name: Build Next.js app
+      run: npm run build
+      env:
+        NEXT_PUBLIC_API_BASE_URL: http://localhost:5000/api/v1 # Variable de entorno para el frontend,
+                                                              # aunque para CI solo se construye
+
+    # Si tienes pruebas unitarias (ej. Jest)
+    # - name: Run unit tests
+    #   run: npm test
