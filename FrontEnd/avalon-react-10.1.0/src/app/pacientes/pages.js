@@ -24,13 +24,24 @@ function PacientesView() {
     try {
       const response = await fetch(`${API_BASE_URL}/pacientes`);
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        // Intenta leer el mensaje de error del backend si la respuesta no es OK
+        let errorMsg = `Error al cargar pacientes: Código ${response.status}`;
+        try {
+          const errorData = await response.json();
+          errorMsg = errorData.message || errorMsg; // Usa el mensaje del backend o el genérico
+        } catch (jsonError) {
+          console.error("Error al parsear JSON de error en GET:", jsonError);
+          // Si no es JSON, usa el texto de la respuesta si es posible
+          const textData = await response.text();
+          errorMsg = `Error al cargar pacientes: ${response.status} - ${textData.substring(0, 100)}...`;
+        }
+        throw new Error(errorMsg);
       }
       const data = await response.json();
       setPacientes(data);
     } catch (e) {
       console.error("Error fetching pacientes:", e);
-      setError("Error al cargar pacientes. Por favor, inténtalo de nuevo.");
+      setError(e.message || "Error desconocido al cargar pacientes.");
     } finally {
       setLoading(false);
     }
@@ -67,16 +78,32 @@ function PacientesView() {
         body: JSON.stringify(formData),
       });
 
-      const result = await response.json();
-      if (!response.ok) {
-        throw new Error(result.message || `HTTP error! status: ${response.status}`);
+      let responseData;
+      // Intenta parsear la respuesta como JSON
+      try {
+        responseData = await response.json();
+      } catch (jsonError) {
+        // Si no se puede parsear como JSON, es un problema del backend
+        const textData = await response.text();
+        console.error("Error al parsear JSON en el submit:", jsonError);
+        console.error("Respuesta cruda del servidor:", textData);
+        setError(`Error del servidor: ${response.status}. Respuesta inesperada.`);
+        setLoading(false);
+        return; // Salir si el parseo falló
       }
-      console.log(result.message); // Mensaje de éxito del backend
+
+      if (!response.ok) {
+        // Si response.ok es falso, y pudimos parsear JSON, usa el mensaje del backend
+        throw new Error(responseData.message || `Error del servidor: Código ${response.status}`);
+      }
+      
+      // Si todo es OK, y hay un mensaje de éxito
+      console.log(responseData.message); 
       setFormData({ nombre: '', apellido: '', fecha_nacimiento: '', email: '' });
       setEditingPaciente(null); // Resetear modo edición
       fetchPacientes(); // Refrescar la lista de pacientes
     } catch (e) {
-      console.error("Error al guardar paciente:", e);
+      console.error("Error al guardar paciente (capturado):", e);
       setError(`Error al guardar paciente: ${e.message}`);
     } finally {
       setLoading(false); // Desactivar loading
@@ -105,14 +132,26 @@ function PacientesView() {
       const response = await fetch(`${API_BASE_URL}/pacientes/${id}`, {
         method: 'DELETE',
       });
+
+      let responseData;
+      try {
+        responseData = await response.json();
+      } catch (jsonError) {
+        const textData = await response.text();
+        console.error("Error al parsear JSON en el delete:", jsonError);
+        console.error("Respuesta cruda del servidor:", textData);
+        setError(`Error del servidor al eliminar: ${response.status}. Respuesta inesperada.`);
+        setLoading(false);
+        return;
+      }
+
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+        throw new Error(responseData.message || `Error del servidor al eliminar: Código ${response.status}`);
       }
       console.log("Paciente eliminado correctamente.");
       fetchPacientes(); // Refrescar la lista
     } catch (e) {
-      console.error("Error al eliminar paciente:", e);
+      console.error("Error al eliminar paciente (capturado):", e);
       setError(`Error al eliminar paciente: ${e.message}`);
     } finally {
       setLoading(false);
