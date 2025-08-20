@@ -1,0 +1,69 @@
+# .github/workflows/backend-ci.yml
+name: Backend CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10' # O la versión de Python que uses (ej. '3.9', '3.11')
+
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt # Asegúrate de tener un requirements.txt
+        pip install Flask-Cors psycopg2-binary gunicorn # Instalar directamente si no está en requirements.txt
+                                                     # Gunicorn es para producción, lo necesitaremos para Render
+
+    - name: Create .env file for testing
+      run: |
+        echo "DB_USER=${{ secrets.DB_USER }}" >> .env
+        echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+        echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
+        echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
+        echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
+        echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+      env:
+        DB_USER: ${{ secrets.DB_USER }}
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        DB_HOST: ${{ secrets.DB_HOST }}
+        DB_NAME: ${{ secrets.DB_NAME }}
+        DB_PORT: ${{ secrets.DB_PORT }}
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
+
+    - name: Start Flask Backend in background
+      run: |
+        nohup gunicorn -w 4 'app:app' > flask.log 2>&1 &
+        sleep 5 # Give Flask app time to start
+      working-directory: ./
+
+    - name: Install Newman for API testing
+      run: npm install -g newman
+
+    - name: Run Postman API Tests
+      run: newman run backend-tests.json # Asegúrate que este archivo esté en la raíz de tu repo
+      env:
+        API_BASE_URL: http://localhost:5000/api/v1 # Las pruebas de Postman deberían apuntar a localhost:5000
+                                                    # durante la CI
+
+    - name: Verify Flask App is running (optional)
+      run: curl http://localhost:5000/
+
+    # Si tu backend necesita migraciones o algo más al inicio de la BD para pruebas
+    # - name: Run DB migrations (if applicable)
+    #   run: flask db upgrade
+
